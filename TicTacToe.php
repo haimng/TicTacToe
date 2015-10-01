@@ -36,7 +36,7 @@ class TicTacToe {
     
     public function run(){
         echo "Input your move (format: ROW,COLUMN). <example>: 0,0 or 0,1 or 1,2\n\n";
-        
+
         while(!$this->isFinished($this->deck)){
             $myMove = $this->readMove();
         
@@ -173,33 +173,38 @@ class TicTacToe {
     }
     
     public function winner($deck){
-        if(    $deck[0][0] > 0 &&
-            (   $deck[0][0] == $deck[0][1] && $deck[0][1] == $deck[0][2]
-            || $deck[0][0] == $deck[1][1] && $deck[1][1] == $deck[2][2]
-            || $deck[0][0] == $deck[1][0] && $deck[1][0] == $deck[2][0] )
-        ){
-            return $deck[0][0];
+        $colDeck = $deck;
+        
+        // Check each row
+        foreach($deck as $r => $row){
+            $player = $row[0];
+            if( $player > 0 && 
+                $row[0] == $row[1] && $row[1] == $row[2]) {
+                return $player;
+            }
             
-        }else if(    $deck[0][1] > 0 &&
-            (  $deck[0][1] == $deck[1][1] && $deck[1][1] == $deck[2][1] )
-        ){
-            return $deck[0][1];
-    
-        }else if(    $deck[1][0] > 0 &&
-            (  $deck[1][0] == $deck[1][1] && $deck[1][1] == $deck[1][2] )
-        ){
-            return $deck[1][0];
-                
-        }else if(    $deck[0][2] > 0 &&
-            (   $deck[0][2] == $deck[1][1] && $deck[1][1] == $deck[2][0]
-            || $deck[0][2] == $deck[1][2] && $deck[1][2] == $deck[2][2] )
-        ){
-            return $deck[0][2];
-            
-        }else if(    $deck[2][0] > 0 &&
-            (  $deck[2][0] == $deck[2][1] && $deck[2][1] == $deck[2][2] )
-        ){
-            return $deck[2][0];
+            // Fill in the column-deck
+            $colDeck[0][$r] = $row[0];
+            $colDeck[1][$r] = $row[1];
+            $colDeck[2][$r] = $row[2];
+        }
+        
+        // Check each column
+        foreach($colDeck as $col){
+            $player = $col[0];
+            if( $player > 0 &&
+                $col[0] == $col[1] && $col[1] == $col[2]) {
+                return $player;
+            }
+        }
+        
+        // Check 2 diagonal lines
+        $player = $deck[1][1];
+        if(   $player > 0 &&
+           (  $deck[0][0] == $deck[1][1] && $deck[1][1] == $deck[2][2]
+           || $deck[0][2] == $deck[1][1] && $deck[1][1] == $deck[2][0] )
+        ) {
+            return $player;
         }
         
         return 0;
